@@ -6,17 +6,8 @@ const searchParams = new URLSearchParams({
   image_type: 'photo',
   orientation: 'horizontal',
   safesearch: 'true',
-  per_page: 3,
-  // page: 1,
+  per_page: 40,
 });
-
-// export default async function fetchImages(searchQuery) {
-//   const query = searchQuery;
-//   console.log(`Шукаємо ${query}`);
-
-//   const response = await axios.get(`${URL}?q=${query}&${searchParams}`);
-//   return response.data.hits;
-// }
 
 export default class ApiService {
   constructor() {
@@ -28,15 +19,14 @@ export default class ApiService {
     // Формуємо рядок запиту: URL + пошук + параметри + сторінка пагінації
     const requestUrl = `${URL}?q=${this.searchQuery}&${searchParams}&page=${this.page}`;
     const response = await axios.get(requestUrl);
-    console.log(`Поточна пагінація сторінка - ${this.page}`);
+    // Збільшуємо сторінку пагінації
     this.incrementPage();
 
-    return response.data.hits;
+    return response.data;
   }
 
   incrementPage() {
     this.page += 1;
-    console.log(`збільшили пагінацію на 1  буде= ${this.page}`);
   }
 
   resetPage() {

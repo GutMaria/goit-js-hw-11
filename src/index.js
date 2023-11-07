@@ -1,4 +1,5 @@
 import ApiService from './pixabay-api';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
 const gallery = document.querySelector('.gallery');
 const form = document.querySelector('.search-form');
@@ -12,39 +13,45 @@ function onFormSubmit(evt) {
   evt.preventDefault();
   // Очищаэмо галерею
   resetGallery();
+  loadMoreBtnHide();
   apiService.resetPage();
   apiService.query = evt.target.elements.searchQuery.value;
   if (apiService.query === '') {
-    alert(
-      'Sorry, there are no images matching your search query. Please try again.'
-    );
+    showNotification();
     return;
   }
-  console.log(
-    `Шукаємо: ${apiService.query} cторінка пагінації ${apiService.page}`
-  );
-
+  // Робимо запит на сервіс
   apiService
     .fetchImages()
-    .then(data => renderCards(data))
-    .catch(error => console.log(error));
+    .then(({ hits, totalHits }) => {
+      // Перевірка якщо пустий масив
+      if (hits.length === 0) {
+        showNotification();
+        return;
+      }
+      renderCards(hits);
+      showTotalHits(totalHits);
+      loadMoreBtnShow();
+    })
+    .catch(error => {
+      loadMoreBtnHide();
+      console.log(error);
+    });
 }
 
 function onLoadMoreClick() {
   apiService
     .fetchImages()
-    .then(data => renderCards(data))
-    .catch(error => console.log(error));
+    .then(({ hits }) => renderCards(hits))
+    .catch(error => {
+      // Ховаємо кнопку і показуємо помилку
+      loadMoreBtnHide();
+      showError();
+      console.log(error);
+    });
 }
 
 function renderCards(arr) {
-  // Перевірка якщо пустий масив
-  if (arr.length === 0) {
-    alert(
-      'Sorry, there are no images matching your search query. Please try again.'
-    );
-    return;
-  }
   const cards = arr.map(
     ({ webformatURL, tags, likes, views, comments, downloads }) => {
       return `<div class="photo-card">
@@ -70,8 +77,33 @@ function renderCards(arr) {
   gallery.insertAdjacentHTML('beforeend', cards.join(''));
 }
 
+// Очищаємо сторінку
 function resetGallery() {
   gallery.innerHTML = '';
+}
+
+// Повідомлення про помилку і TotalHits
+function showNotification() {
+  Notify.failure(
+    'Sorry, there are no images matching your search query. Please try again.'
+  );
+}
+
+function showTotalHits(quantity) {
+  Notify.success(`Hooray! We found ${quantity} images.`);
+}
+
+function showError() {
+  Notify.failure(`We're sorry, but you've reached the end of search results.`);
+}
+
+// Дві функції для кнопки loadMoreBtn
+function loadMoreBtnShow() {
+  loadMore.hidden = false;
+}
+
+function loadMoreBtnHide() {
+  loadMore.hidden = true;
 }
 // webformatURL - посилання на маленьке зображення для списку карток.
 // largeImageURL - посилання на велике зображення.
