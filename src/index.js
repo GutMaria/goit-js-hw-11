@@ -20,7 +20,7 @@ function onFormSubmit(evt) {
     showNotification();
     return;
   }
-  // Робимо запит на сервіс
+  // Робимо запит на серв
   apiService
     .fetchImages()
     .then(({ hits, totalHits }) => {
@@ -37,6 +37,7 @@ function onFormSubmit(evt) {
       loadMoreBtnHide();
       console.log(error);
     });
+  form.reset();
 }
 
 function onLoadMoreClick() {
@@ -58,16 +59,16 @@ function renderCards(arr) {
   <img src="${webformatURL}" alt="${tags}" loading="lazy" />
   <div class="info">
     <p class="info-item">
-      <b>Likes: ${likes}</b>
+      <b>Likes </b>${likes}
     </p>
     <p class="info-item">
-      <b>Views: ${views}</b>
+      <b>Views </b>${views}
     </p>
     <p class="info-item">
-      <b>Comments: ${comments}</b>
+      <b>Comments </b>${comments}
     </p>
     <p class="info-item">
-      <b>Downloads: ${downloads}</b>
+      <b>Downloads </b>${downloads}
     </p>
   </div>
 </div>`;
@@ -99,11 +100,11 @@ function showError() {
 
 // Дві функції для кнопки loadMoreBtn
 function loadMoreBtnShow() {
-  loadMore.hidden = false;
+  loadMore.classList.remove('is-hidden');
 }
 
 function loadMoreBtnHide() {
-  loadMore.hidden = true;
+  loadMore.classList.add('is-hidden');
 }
 // webformatURL - посилання на маленьке зображення для списку карток.
 // largeImageURL - посилання на велике зображення.
