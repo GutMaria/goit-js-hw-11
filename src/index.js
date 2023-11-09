@@ -19,7 +19,7 @@ function onFormSubmit(evt) {
   resetGallery();
   loadMoreBtnHide();
   apiService.resetPage();
-  apiService.query = evt.target.elements.searchQuery.value;
+  apiService.query = form.elements.searchQuery.value;
   if (apiService.query === '') {
     showNotification();
     return;
