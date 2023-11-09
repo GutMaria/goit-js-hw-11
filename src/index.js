@@ -1,10 +1,14 @@
 import ApiService from './pixabay-api';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
 
 const gallery = document.querySelector('.gallery');
 const form = document.querySelector('.search-form');
 const loadMore = document.querySelector('.load-more');
 const apiService = new ApiService();
+
+let lightbox = new SimpleLightbox('.gallery a');
 
 form.addEventListener('submit', onFormSubmit);
 loadMore.addEventListener('click', onLoadMoreClick);
@@ -54,9 +58,17 @@ function onLoadMoreClick() {
 
 function renderCards(arr) {
   const cards = arr.map(
-    ({ webformatURL, tags, likes, views, comments, downloads }) => {
-      return `<div class="photo-card">
-  <img src="${webformatURL}" alt="${tags}" loading="lazy" />
+    ({
+      webformatURL,
+      largeImageURL,
+      tags,
+      likes,
+      views,
+      comments,
+      downloads,
+    }) => {
+      return `<div class="photo-card"><a href="${largeImageURL}">
+  <img src="${webformatURL}" alt="${tags}" loading="lazy" /></a>
   <div class="info">
     <p class="info-item">
       <b>Likes </b>${likes}
@@ -76,6 +88,8 @@ function renderCards(arr) {
   );
 
   gallery.insertAdjacentHTML('beforeend', cards.join(''));
+  // Оновлення lightbox після рендеру карток
+  lightbox.refresh();
 }
 
 // Очищаємо сторінку
@@ -106,10 +120,3 @@ function loadMoreBtnShow() {
 function loadMoreBtnHide() {
   loadMore.classList.add('is-hidden');
 }
-// webformatURL - посилання на маленьке зображення для списку карток.
-// largeImageURL - посилання на велике зображення.
-// tags - рядок з описом зображення. Підійде для атрибуту alt.
-// likes - кількість лайків.
-// views - кількість переглядів.
-// comments - кількість коментарів.
-// downloads - кількість завантажень.
