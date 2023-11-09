@@ -47,7 +47,16 @@ function onFormSubmit(evt) {
 function onLoadMoreClick() {
   apiService
     .fetchImages()
-    .then(({ hits }) => renderCards(hits))
+    .then(({ hits }) => {
+      renderCards(hits);
+      // Додаємо плавне прокручування
+      const { height: cardHeight } =
+        gallery.firstElementChild.getBoundingClientRect();
+      window.scrollBy({
+        top: cardHeight * 2,
+        behavior: 'smooth',
+      });
+    })
     .catch(error => {
       // Ховаємо кнопку і показуємо помилку
       loadMoreBtnHide();
