@@ -41,7 +41,7 @@ function onFormSubmit(evt) {
       // якщо завантажені всі елементи колекції, кнопку лоад не показувати
       if (apiService.page > Math.ceil(totalHits / 40)) {
         loadMoreBtnHide();
-        console.log('Досягли максимуму колекції');
+        showError();
       }
     })
     .catch(error => {
@@ -59,7 +59,7 @@ function onLoadMoreClick() {
 
       if (apiService.page > Math.ceil(totalHits / 40)) {
         loadMoreBtnHide();
-        console.log('Досягли максимуму колекції');
+        showError();
       }
 
       // Додаємо плавне прокручування
