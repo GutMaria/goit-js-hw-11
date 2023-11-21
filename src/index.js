@@ -37,6 +37,12 @@ function onFormSubmit(evt) {
       renderCards(hits);
       showTotalHits(totalHits);
       loadMoreBtnShow();
+
+      // якщо завантажені всі елементи колекції, кнопку лоад не показувати
+      if (apiService.page > Math.ceil(totalHits / 40)) {
+        loadMoreBtnHide();
+        console.log('Досягли максимуму колекції');
+      }
     })
     .catch(error => {
       loadMoreBtnHide();
@@ -48,8 +54,14 @@ function onFormSubmit(evt) {
 function onLoadMoreClick() {
   apiService
     .fetchImages()
-    .then(({ hits }) => {
+    .then(({ hits, totalHits }) => {
       renderCards(hits);
+
+      if (apiService.page > Math.ceil(totalHits / 40)) {
+        loadMoreBtnHide();
+        console.log('Досягли максимуму колекції');
+      }
+
       // Додаємо плавне прокручування
       const { height: cardHeight } =
         gallery.firstElementChild.getBoundingClientRect();
