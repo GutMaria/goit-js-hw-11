@@ -20,7 +20,8 @@ function onFormSubmit(evt) {
   loadMoreBtnHide();
   apiService.resetPage();
   apiService.query = form.elements.searchQuery.value;
-  if (apiService.query === '') {
+  // Перевірка якщо пошук пусто або пробіл
+  if (apiService.query.trim() === '') {
     showNotification();
     return;
   }
